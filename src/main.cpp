@@ -17,13 +17,13 @@ SDL_Rect rectangle = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 32, 32};
 const int SPEED = 600; // Lower speed for testing
 const int FRAME_RATE = 60; // Desired frame rate (frames per second)
  
+SDL_Texture* sprite;
+
 SDL_Texture* LoadSprite(const char* file, SDL_Renderer* renderer)
 {
     SDL_Texture* texture = IMG_LoadTexture(renderer, file);
     return texture;
 }
-
-SDL_Texture* sprite = LoadSprite("sprites/sprite.png", renderer);
 
 void RenderSprite(SDL_Texture* sprite, SDL_Renderer* renderer, int x, int y)
 {
@@ -83,14 +83,16 @@ void update(float deltaTime) {
 
 // Function to render graphics
 void render() {
-    
+    // Clear the renderer
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 128, 255);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     RenderSprite(sprite, renderer, 30, 30);
 
-    // Present the renderer
+    SDL_RenderFillRect(renderer, &rectangle);
+
     SDL_RenderPresent(renderer);
 }
 
@@ -117,10 +119,14 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    sprite = LoadSprite("sprites/sprite.png", renderer);
+
     if (SDL_NumJoysticks() < 1) {
         printf("No game controllers connected!\n");
         return -1;
-    } else {
+    } 
+    else {
+
         controller = SDL_GameControllerOpen(0);
         if (controller == NULL) {
             printf("Unable to open game controller! SDL Error: %s\n", SDL_GetError());
