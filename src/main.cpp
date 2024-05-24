@@ -86,7 +86,7 @@ void render() {
 
     SDL_RenderFillRect(renderer, &rectangle);
 
-    SDL_RenderPresent(renderer);
+    SDL_RenderPresent(renderer);  
 }
 
 void capFrameRate(Uint32 frameStartTime) {
