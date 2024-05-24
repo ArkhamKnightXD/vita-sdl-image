@@ -83,17 +83,12 @@ void update(float deltaTime) {
 
 // Function to render graphics
 void render() {
-    // Clear the renderer
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    
     SDL_RenderClear(renderer);
 
-    // Set drawing color to white
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 128, 255);
 
     RenderSprite(sprite, renderer, 30, 30);
-
-    // Render the rectangle
-    SDL_RenderFillRect(renderer, &rectangle);
 
     // Present the renderer
     SDL_RenderPresent(renderer);
