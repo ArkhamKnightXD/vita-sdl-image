@@ -8,13 +8,14 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   endif()
 endif()
 
-project(redrectangle)
+project(image)
 include("${VITASDK}/share/vita.cmake" REQUIRED)
 
+set(SDL2_DIR ${VITASDK}/arm-vita-eabi/lib/cmake/SDL2/)
 find_package(SDL2 REQUIRED)
 
-set(VITA_APP_NAME "Red Rectangle")
-set(VITA_TITLEID  "VSDK00017")
+set(VITA_APP_NAME "SDL Image")
+set(VITA_TITLEID  "VSDK00018")
 set(VITA_VERSION  "01.00")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11")
@@ -29,7 +30,23 @@ add_executable(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  SDL2::SDL2
+  SDL2
+  SDL2_image
+  png
+  png16
+  jpeg
+  z
+  SceGxm_stub
+  SceCtrl_stub
+  SceAudio_stub
+  SceMotion_stub
+  SceCommonDialog_stub
+  SceIme_stub
+  SceHid_stub
+  SceTouch_stub
+  SceDisplay_stub
+  SceAudio_stub
+  SceAudioIn_stub
 )
 
 vita_create_self(${PROJECT_NAME}.self ${PROJECT_NAME})

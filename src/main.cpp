@@ -1,5 +1,6 @@
 #include <psp2/kernel/processmgr.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 // Screen dimension constants
 enum {
@@ -16,6 +17,25 @@ SDL_Rect rectangle = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 32, 32};
 const int SPEED = 600; // Lower speed for testing
 const int FRAME_RATE = 60; // Desired frame rate (frames per second)
  
+SDL_Texture* LoadSprite(const char* file, SDL_Renderer* renderer)
+{
+    SDL_Texture* texture = IMG_LoadTexture(renderer, file);
+    return texture;
+}
+
+SDL_Texture* sprite = LoadSprite("sprites/sprite.png", renderer);
+
+void RenderSprite(SDL_Texture* sprite, SDL_Renderer* renderer, int x, int y)
+{
+    SDL_Rect dest;
+    dest.x = x;
+    dest.y = y;
+    SDL_QueryTexture(sprite, NULL, NULL, &dest.w, &dest.h);
+    SDL_RenderCopy(renderer, sprite, NULL, &dest);
+}
+
+
+
 // Exit the game and clean up
 void quitGame() {
     SDL_GameControllerClose(controller);
@@ -69,6 +89,8 @@ void render() {
 
     // Set drawing color to white
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+    RenderSprite(sprite, renderer, 30, 30);
 
     // Render the rectangle
     SDL_RenderFillRect(renderer, &rectangle);
