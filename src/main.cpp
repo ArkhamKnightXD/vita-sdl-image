@@ -61,7 +61,7 @@ auto main() -> int
         }
 
         // Clear the screen
-        SDL_RenderClear(renderer);
+        SDL_RenderClear(renderer); 
 
         // Draw everything on a dark blue background
         SDL_SetRenderDrawColor(renderer, 0, 0, 128, 255);
