@@ -21,10 +21,6 @@ set(VITA_VERSION  "01.00")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-include_directories(
-  ../common
-)
-
 add_executable(${PROJECT_NAME}
   src/main.cpp
 )
