@@ -7,33 +7,30 @@ enum {
   SCREEN_HEIGHT = 544
 };
 
-SDL_Window *window = NULL;
-SDL_Renderer *renderer = NULL;
+SDL_Window* window = NULL;
+SDL_Renderer* renderer = NULL;
 SDL_GameController* controller = NULL;
+SDL_Texture* sprite;
 
-SDL_Rect rectangle = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 32, 32};
+SDL_Rect spriteBounds = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 64, 64};
 
 const int SPEED = 600; 
 const int FRAME_RATE = 60;
  
-SDL_Texture* sprite;
+SDL_Texture* loadSprite(const char* file, SDL_Renderer* renderer) {
 
-SDL_Texture* LoadSprite(const char* file, SDL_Renderer* renderer)
-{
     SDL_Texture* texture = IMG_LoadTexture(renderer, file);
     return texture;
 }
 
-void RenderSprite(SDL_Texture* sprite, SDL_Renderer* renderer, int x, int y)
-{
-    SDL_Rect dest;
-    dest.x = x;
-    dest.y = y;
-    SDL_QueryTexture(sprite, NULL, NULL, &dest.w, &dest.h);
-    SDL_RenderCopy(renderer, sprite, NULL, &dest);
+void renderSprite(SDL_Texture* sprite, SDL_Renderer* renderer, SDL_Rect spriteBounds) {
+
+    SDL_QueryTexture(sprite, NULL, NULL, &spriteBounds.w, &spriteBounds.h);
+    SDL_RenderCopy(renderer, sprite, NULL, &spriteBounds);
 }
 
 void quitGame() {
+
     SDL_GameControllerClose(controller);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -58,20 +55,20 @@ void update(float deltaTime) {
 
     SDL_GameControllerUpdate();
 
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP) && rectangle.y > 0) {
-        rectangle.y -= SPEED * deltaTime;
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP) && spriteBounds.y > 0) {
+        spriteBounds.y -= SPEED * deltaTime;
     }
 
-    else if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN) && rectangle.y < SCREEN_HEIGHT - rectangle.h) {
-        rectangle.y += SPEED * deltaTime;
+    else if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN) && spriteBounds.y < SCREEN_HEIGHT - spriteBounds.h) {
+        spriteBounds.y += SPEED * deltaTime;
     }
 
-    else if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) && rectangle.x > 0) {
-        rectangle.x -= SPEED * deltaTime;
+    else if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT) && spriteBounds.x > 0) {
+        spriteBounds.x -= SPEED * deltaTime;
     }
 
-    else if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) && rectangle.x < SCREEN_WIDTH - rectangle.w) {
-        rectangle.x += SPEED * deltaTime;
+    else if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) && spriteBounds.x < SCREEN_WIDTH - spriteBounds.w) {
+        spriteBounds.x += SPEED * deltaTime;
     }
 }
 
@@ -82,9 +79,7 @@ void render() {
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-    RenderSprite(sprite, renderer, 30, 30);
-
-    SDL_RenderFillRect(renderer, &rectangle);
+    renderSprite(sprite, renderer, spriteBounds);
 
     SDL_RenderPresent(renderer);  
 }
@@ -98,21 +93,19 @@ void capFrameRate(Uint32 frameStartTime) {
     }
 }
 
-int main(int argc, char *argv[]) {
+int main() {
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
         return -1;
     }
 
-    if ((window = SDL_CreateWindow("RedRectangle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)) == NULL) {
+    if ((window = SDL_CreateWindow("sdl-image", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)) == NULL) {
         return -1;
     }
 
     if ((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) == NULL) {
         return -1;
     }
-
-    sprite = LoadSprite("sprites/sprite.png", renderer);
 
     if (SDL_NumJoysticks() < 1) {
         printf("No game controllers connected!\n");
@@ -128,11 +121,13 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    sprite = loadSprite("sprites/sprite.png", renderer);
+
     Uint32 previousFrameTime = SDL_GetTicks();
     Uint32 currentFrameTime;
     float deltaTime;
 
-    while (1) {
+    while (true) {
 
         currentFrameTime = SDL_GetTicks();
         deltaTime = (currentFrameTime - previousFrameTime) / 1000.0f;
@@ -146,5 +141,4 @@ int main(int argc, char *argv[]) {
     }
 
     quitGame();
-    return 0;
 }
