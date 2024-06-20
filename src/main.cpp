@@ -15,7 +15,6 @@ SDL_Texture* sprite;
 SDL_Rect spriteBounds = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 64, 64};
 
 const int SPEED = 600; 
-const int FRAME_RATE = 60;
  
 SDL_Texture* loadSprite(const char* file, SDL_Renderer* renderer) {
 
@@ -84,15 +83,6 @@ void render() {
     SDL_RenderPresent(renderer);  
 }
 
-void capFrameRate(Uint32 frameStartTime) {
-
-    Uint32 frameTime = SDL_GetTicks() - frameStartTime;
-    
-    if (frameTime < 1000 / FRAME_RATE) {
-        SDL_Delay(1000 / FRAME_RATE - frameTime);
-    }
-}
-
 int main() {
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
@@ -136,8 +126,6 @@ int main() {
         handleEvents();
         update(deltaTime);
         render();
-
-        capFrameRate(currentFrameTime);
     }
 
     quitGame();
